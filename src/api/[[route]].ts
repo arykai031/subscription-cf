@@ -7,7 +7,7 @@ const app = new Hono<{ Bindings: Env }>();
 
 // CORS 中间件
 app.use('*', async (c, next) => {
-  const origin = c.env.ENVIRONMENT === 'development' ? 'http://localhost:5173' : c.req.header('Origin') || '';
+  const origin = c.env.ENVIRONMENT === 'development' ? 'http://localhost:9173' : c.req.header('Origin') || '';
   c.header('Access-Control-Allow-Origin', origin);
   c.header('Access-Control-Allow-Credentials', 'true');
   c.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');

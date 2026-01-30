@@ -1,5 +1,5 @@
-import { SignJWT, jwtVerify } from 'jose';
 import type { User } from '@/shared/types';
+import { SignJWT, jwtVerify } from 'jose';
 
 const JWT_SECRET = new TextEncoder().encode(
   process.env.JWT_SECRET || 'your-secret-key-min-32-characters-long'
@@ -12,6 +12,7 @@ export interface JwtPayload {
   userId: string;
   email: string;
   username: string;
+  [key: string]: unknown;
 }
 
 /**

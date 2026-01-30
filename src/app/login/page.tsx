@@ -17,8 +17,9 @@ import { Link, useNavigate } from "react-router-dom";
 
 /**
  * 登录页面
+ * @returns React.JSX.Element
  */
-const LoginPage: React.FC = () => {
+function LoginPage(): React.JSX.Element {
   const navigate = useNavigate();
   const { login, isLoading, error, clearError } = useAuth();
 
@@ -31,6 +32,7 @@ const LoginPage: React.FC = () => {
 
   /**
    * 验证表单
+   * @returns boolean
    */
   const validateForm = (): boolean => {
     const errors: Record<string, string> = {};
@@ -51,6 +53,7 @@ const LoginPage: React.FC = () => {
 
   /**
    * 处理表单提交
+   * @param e - 表单事件
    */
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -68,9 +71,10 @@ const LoginPage: React.FC = () => {
 
   /**
    * 处理输入变化
+   * @param e - 输入事件
    */
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+    const { name, value } = e.currentTarget;
     setFormData((prev) => ({ ...prev, [name]: value }));
     // 清除该字段的错误
     if (formErrors[name]) {
@@ -192,6 +196,6 @@ const LoginPage: React.FC = () => {
       </Card>
     </div>
   );
-};
+}
 
 export default LoginPage;

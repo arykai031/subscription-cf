@@ -1,23 +1,28 @@
-import React, { Suspense, lazy } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { SubscriptionList } from "@/components/subscription/List";
+import React, { Suspense, lazy } from "react";
+import { Route, Routes } from "react-router-dom";
 
 // 懒加载页面组件
-const LoginPage = lazy(() => import('./login/page'));
-const RegisterPage = lazy(() => import('./register/page'));
+const LoginPage = lazy(() => import("./login/page"));
+const RegisterPage = lazy(() => import("./register/page"));
 
 /**
  * 加载中组件
+ * @returns React.JSX.Element
  */
-const Loading: React.FC = () => (
-  <div className="min-h-screen flex items-center justify-center">
-    <div className="text-gray-600">加载中...</div>
-  </div>
-);
+function Loading(): React.JSX.Element {
+  return (
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="text-gray-600">加载中...</div>
+    </div>
+  );
+}
 
 /**
  * 应用主组件
+ * @returns React.JSX.Element
  */
-const App: React.FC = () => {
+function App(): React.JSX.Element {
   return (
     <div className="min-h-screen bg-gray-50">
       <Suspense fallback={<Loading />}>
@@ -26,8 +31,7 @@ const App: React.FC = () => {
             path="/"
             element={
               <div className="container mx-auto px-4 py-8">
-                <h1 className="text-2xl font-bold">订阅管理系统</h1>
-                <p className="mt-4 text-gray-600">欢迎使用订阅管理系统</p>
+                <SubscriptionList />
               </div>
             }
           />
@@ -37,6 +41,6 @@ const App: React.FC = () => {
       </Suspense>
     </div>
   );
-};
+}
 
 export default App;

@@ -5,6 +5,23 @@ import bcrypt from 'bcryptjs';
 import { Hono } from 'hono';
 import { generateToken } from '../utils/jwt';
 
+/**
+ * D1 Database 类型定义
+ */
+interface D1Database {
+  prepare(query: string): D1PreparedStatement;
+}
+
+interface D1PreparedStatement {
+  bind(...values: unknown[]): D1PreparedStatement;
+  first<T = unknown>(): Promise<T | null>;
+  run(): Promise<D1Result>;
+}
+
+interface D1Result {
+  success: boolean;
+}
+
 const authRouter = new Hono<{ Bindings: Env }>();
 
 /**
@@ -12,7 +29,7 @@ const authRouter = new Hono<{ Bindings: Env }>();
  * POST /api/auth/register
  */
 authRouter.post('/register', async (c) => {
-  const db = c.env.DB;
+  const db = c.env.DB as D1Database;
 
   try {
     const body = await c.req.json<RegisterRequest>();
@@ -92,7 +109,7 @@ authRouter.post('/register', async (c) => {
     // 获取创建的用户信息
     const user = await db.prepare(
       'SELECT id, email, username, phone, avatar_url, created_at, updated_at FROM users WHERE id = ?'
-    ).bind(userId).first<User>();
+    ).bind(userId).first<User & { avatar_url?: string; created_at: number; updated_at: number }>();
 
     if (!user) {
       return c.json<ApiResponse>({
@@ -132,7 +149,7 @@ authRouter.post('/register', async (c) => {
  * POST /api/auth/login
  */
 authRouter.post('/login', async (c) => {
-  const db = c.env.DB;
+  const db = c.env.DB as D1Database;
 
   try {
     const body = await c.req.json<LoginRequest>();
@@ -149,7 +166,7 @@ authRouter.post('/login', async (c) => {
     // 查找用户
     const user = await db.prepare(
       'SELECT id, email, username, password_hash, phone, avatar_url, created_at, updated_at FROM users WHERE email = ?'
-    ).bind(email).first<User & { password_hash: string }>();
+    ).bind(email).first<User & { password_hash: string; avatar_url?: string; created_at: number; updated_at: number }>();
 
     if (!user) {
       return c.json<ApiResponse>({

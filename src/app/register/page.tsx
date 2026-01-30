@@ -1,52 +1,59 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '@/hooks/useAuth';
-import { isValidEmail, isValidUsername, isValidPassword } from '@/shared/utils/validation';
+import { useAuth } from "@/hooks/useAuth";
+import {
+  isValidEmail,
+  isValidPassword,
+  isValidUsername,
+} from "@/shared/utils/validation";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 /**
  * 注册页面
+ * @returns React.JSX.Element
  */
-const RegisterPage: React.FC = () => {
+function RegisterPage(): React.JSX.Element {
   const navigate = useNavigate();
   const { register, isLoading, error, clearError } = useAuth();
 
   const [formData, setFormData] = useState({
-    email: '',
-    username: '',
-    password: '',
-    confirmPassword: '',
+    email: "",
+    username: "",
+    password: "",
+    confirmPassword: "",
   });
 
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
   /**
    * 验证表单
+   * @returns boolean
    */
   const validateForm = (): boolean => {
     const errors: Record<string, string> = {};
 
     if (!formData.email) {
-      errors.email = '请输入邮箱';
+      errors.email = "请输入邮箱";
     } else if (!isValidEmail(formData.email)) {
-      errors.email = '邮箱格式不正确';
+      errors.email = "邮箱格式不正确";
     }
 
     if (!formData.username) {
-      errors.username = '请输入用户名';
+      errors.username = "请输入用户名";
     } else if (!isValidUsername(formData.username)) {
-      errors.username = '用户名格式不正确（2-20位，支持字母、数字、下划线和中文）';
+      errors.username =
+        "用户名格式不正确（2-20位，支持字母、数字、下划线和中文）";
     }
 
     if (!formData.password) {
-      errors.password = '请输入密码';
+      errors.password = "请输入密码";
     } else if (!isValidPassword(formData.password)) {
-      errors.password = '密码长度至少6位';
+      errors.password = "密码长度至少6位";
     }
 
     if (!formData.confirmPassword) {
-      errors.confirmPassword = '请确认密码';
+      errors.confirmPassword = "请确认密码";
     } else if (formData.password !== formData.confirmPassword) {
-      errors.confirmPassword = '两次输入的密码不一致';
+      errors.confirmPassword = "两次输入的密码不一致";
     }
 
     setFormErrors(errors);
@@ -55,6 +62,7 @@ const RegisterPage: React.FC = () => {
 
   /**
    * 处理表单提交
+   * @param e - 表单事件
    */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -64,7 +72,7 @@ const RegisterPage: React.FC = () => {
 
     try {
       await register(formData.email, formData.username, formData.password);
-      navigate('/');
+      navigate("/");
     } catch {
       // 错误已在 store 中处理
     }
@@ -72,13 +80,14 @@ const RegisterPage: React.FC = () => {
 
   /**
    * 处理输入变化
+   * @param e - 输入事件
    */
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+    const { name, value } = e.currentTarget;
     setFormData((prev) => ({ ...prev, [name]: value }));
     // 清除该字段的错误
     if (formErrors[name]) {
-      setFormErrors((prev) => ({ ...prev, [name]: '' }));
+      setFormErrors((prev) => ({ ...prev, [name]: "" }));
     }
   };
 
@@ -90,7 +99,7 @@ const RegisterPage: React.FC = () => {
             注册账号
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            已有账号？{' '}
+            已有账号？{" "}
             <Link
               to="/login"
               className="font-medium text-indigo-600 hover:text-indigo-500"
@@ -119,7 +128,7 @@ const RegisterPage: React.FC = () => {
                 autoComplete="email"
                 required
                 className={`appearance-none rounded-none relative block w-full px-3 py-2 border ${
-                  formErrors.email ? 'border-red-300' : 'border-gray-300'
+                  formErrors.email ? "border-red-300" : "border-gray-300"
                 } placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm`}
                 placeholder="邮箱地址"
                 value={formData.email}
@@ -141,14 +150,16 @@ const RegisterPage: React.FC = () => {
                 autoComplete="username"
                 required
                 className={`appearance-none rounded-none relative block w-full px-3 py-2 border ${
-                  formErrors.username ? 'border-red-300' : 'border-gray-300'
+                  formErrors.username ? "border-red-300" : "border-gray-300"
                 } placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm`}
                 placeholder="用户名（2-20位，支持字母、数字、下划线和中文）"
                 value={formData.username}
                 onChange={handleChange}
               />
               {formErrors.username && (
-                <p className="text-red-500 text-xs mt-1">{formErrors.username}</p>
+                <p className="text-red-500 text-xs mt-1">
+                  {formErrors.username}
+                </p>
               )}
             </div>
 
@@ -163,14 +174,16 @@ const RegisterPage: React.FC = () => {
                 autoComplete="new-password"
                 required
                 className={`appearance-none rounded-none relative block w-full px-3 py-2 border ${
-                  formErrors.password ? 'border-red-300' : 'border-gray-300'
+                  formErrors.password ? "border-red-300" : "border-gray-300"
                 } placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm`}
                 placeholder="密码（至少6位）"
                 value={formData.password}
                 onChange={handleChange}
               />
               {formErrors.password && (
-                <p className="text-red-500 text-xs mt-1">{formErrors.password}</p>
+                <p className="text-red-500 text-xs mt-1">
+                  {formErrors.password}
+                </p>
               )}
             </div>
 
@@ -185,14 +198,18 @@ const RegisterPage: React.FC = () => {
                 autoComplete="new-password"
                 required
                 className={`appearance-none rounded-none relative block w-full px-3 py-2 border ${
-                  formErrors.confirmPassword ? 'border-red-300' : 'border-gray-300'
+                  formErrors.confirmPassword
+                    ? "border-red-300"
+                    : "border-gray-300"
                 } placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm`}
                 placeholder="确认密码"
                 value={formData.confirmPassword}
                 onChange={handleChange}
               />
               {formErrors.confirmPassword && (
-                <p className="text-red-500 text-xs mt-1">{formErrors.confirmPassword}</p>
+                <p className="text-red-500 text-xs mt-1">
+                  {formErrors.confirmPassword}
+                </p>
               )}
             </div>
           </div>
@@ -203,13 +220,13 @@ const RegisterPage: React.FC = () => {
               disabled={isLoading}
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isLoading ? '注册中...' : '注册'}
+              {isLoading ? "注册中..." : "注册"}
             </button>
           </div>
         </form>
       </div>
     </div>
   );
-};
+}
 
 export default RegisterPage;

@@ -51,8 +51,8 @@ export interface ApiResponse<T = unknown> {
  * Cloudflare 环境绑定类型
  */
 export interface Env {
-  DB: D1Database;
-  AVATARS_BUCKET: R2Bucket;
+  DB: unknown;
+  AVATARS_BUCKET: unknown;
   JWT_SECRET: string;
   ENVIRONMENT: string;
 }
