@@ -1,6 +1,12 @@
 name = "subscription-cf"
 compatibility_date = "2024-01-29"
 
+# 默认 D1 数据库绑定（用于本地开发）
+[[d1_databases]]
+binding = "DB"
+database_name = "subscription-db-dev"
+database_id = "14067971-cc2b-484c-948a-5837b213c0be"
+
 # 生产环境变量（不含敏感信息，仅配置标识）
 [env.production]
 vars = { ENVIRONMENT = "production" }
@@ -9,12 +15,12 @@ vars = { ENVIRONMENT = "production" }
 [[env.production.d1_databases]]
 binding = "DB"
 database_name = "subscription-db"
-database_id = "your-database-id"
+database_id = "566d7056-6f89-4b09-be6e-83227b46437e"
 
 # R2 头像存储
 [[env.production.r2_buckets]]
 binding = "AVATARS_BUCKET"
-bucket_name = "user-avatars"
+bucket_name = "ary-bucket"
 
 # 开发环境（本地 wrangler dev 使用）
 [env.development]
@@ -23,4 +29,4 @@ vars = { ENVIRONMENT = "development" }
 [[env.development.d1_databases]]
 binding = "DB"
 database_name = "subscription-db-dev"
-database_id = "local"  # 本地使用 wrangler d1 本地模式
+database_id = "14067971-cc2b-484c-948a-5837b213c0be"
