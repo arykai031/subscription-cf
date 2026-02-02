@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { User } from '@/shared/types';
-import { authApi } from './api';
+import { authApi, onAuthStateChange } from './api';
 
 /**
  * 认证状态接口
@@ -18,6 +18,7 @@ interface AuthState {
   logout: () => void;
   clearError: () => void;
   initialize: () => void;
+  setAuthState: (isAuthenticated: boolean, user: User | null) => void;
 }
 
 /**
@@ -33,15 +34,35 @@ export const useAuthStore = create<AuthState>()(
 
       /**
        * 初始化认证状态
+       * 从 localStorage 恢复用户状态
        */
       initialize: () => {
         const user = authApi.getCurrentUser();
         const isAuthenticated = authApi.isAuthenticated();
         set({ user, isAuthenticated });
+
+        // 订阅认证状态变化
+        onAuthStateChange((newIsAuthenticated) => {
+          if (!newIsAuthenticated) {
+            // Token 过期或登出，清除状态
+            set({ user: null, isAuthenticated: false, error: null });
+          }
+        });
+      },
+
+      /**
+       * 设置认证状态
+       * @param isAuthenticated - 是否已认证
+       * @param user - 用户信息
+       */
+      setAuthState: (isAuthenticated: boolean, user: User | null) => {
+        set({ isAuthenticated, user });
       },
 
       /**
        * 用户登录
+       * @param email - 邮箱
+       * @param password - 密码
        */
       login: async (email: string, password: string) => {
         set({ isLoading: true, error: null });
@@ -59,6 +80,9 @@ export const useAuthStore = create<AuthState>()(
 
       /**
        * 用户注册
+       * @param email - 邮箱
+       * @param username - 用户名
+       * @param password - 密码
        */
       register: async (email: string, username: string, password: string) => {
         set({ isLoading: true, error: null });
